@@ -82,7 +82,7 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Hi, my name is Clara Liu"
-    subtitle = "A LBS "
+    subtitle = "A LBS MFA student"
     buttonText = "Get Started"
 
 
@@ -176,7 +176,7 @@ disqusShortname = ""
 
     [[params.contact.phone]]
     title = "Phone"
-    phone = "(000) 000-0000 x1234"
+    phone = "(852) 54806816"
 
     [[params.contact.address]]
     title = "Address"
