@@ -8,5 +8,5 @@ draft: false
 image: pic07.jpg
 keywords: ""
 slug: aliquam
-title: Aliquam
+title: GDP components over time and among countries
 ---
