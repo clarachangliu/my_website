@@ -51,11 +51,11 @@ disqusShortname = ""
       name = "Blogs"
       url = "blogs"
 
-    [[params.navigation.links]]
+   # [[params.navigation.links]]
       name = "Generic Blog"
       url = "blogs/ipsum"
 
-    [[params.navigation.links]]
+    #[[params.navigation.links]]
       name = "Elements"
       url = "elements.html"
 
@@ -104,16 +104,16 @@ disqusShortname = ""
       url = "blogs/tempus"
 
     [[params.tiles.showcase]]
-      title = "Magna"
-      subtitle = "Lorem Etiam Nullam"
+      title = "Yield Curve Analysis"
+      subtitle = "The predictive power of yield curve inversion"
       image = "pic03.jpg"
       url = "blogs/magna"
 
-   # [[params.tiles.showcase]]
-    #  title = "Ipsum"
-     # subtitle = "Nisl Sed Aliquam"
-      #image = "pic04.jpg"
-      #url = "blogs/ipsum"
+    [[params.tiles.showcase]]
+      title = "COVID-19 Death Rate Analysis"
+      subtitle = "Explore the pattern of CDC COVID-19 public use data"
+      image = "pic04.jpg"
+      url = "blogs/ipsum"
 
    # [[params.tiles.showcase]]
     #  title = "Consequat"
