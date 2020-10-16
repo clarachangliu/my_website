@@ -106,7 +106,7 @@ disqusShortname = ""
     [[params.tiles.showcase]]
       title = "Yield Curve Analysis"
       subtitle = "The predictive power of yield curve inversion"
-      image = "pic03.jpg"
+      image = "pic_yield.jpg"
       url = "blogs/magna"
 
     [[params.tiles.showcase]]
