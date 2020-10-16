@@ -51,11 +51,11 @@ disqusShortname = ""
       name = "Blogs"
       url = "blogs"
 
-   # [[params.navigation.links]]
+    [[params.navigation.links]]
       name = "Generic Blog"
       url = "blogs/ipsum"
 
-    #[[params.navigation.links]]
+    [[params.navigation.links]]
       name = "Elements"
       url = "elements.html"
 
