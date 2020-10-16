@@ -100,7 +100,7 @@ disqusShortname = ""
     [[params.tiles.showcase]]
       title = "Movies Analysis"
       subtitle = "Explore factors that impact movie incomes"
-      image = "pic02.jpg"
+      image = "pic_theater.jpg"
       url = "blogs/tempus"
 
     [[params.tiles.showcase]]
