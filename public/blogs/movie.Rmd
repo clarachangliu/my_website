@@ -2,7 +2,23 @@
 site: blogdown:::blogdown_site
 ---
 
-# Analysis of movies- IMDB dataset
+# Analysis of movies based on IMDB dataset
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
 
 ```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
@@ -21,6 +37,7 @@ library(lubridate) #to handle dates
 library(ggrepel)
 ```
 
+I'm a big fan watching movies. In this project, I will look at a subset sample of movies, taken from the Kaggle IMDB 5000 movie dataset. I would like to explore what factors influence the gross return of a movie. 
 
 
 ```{r,load_movies, warning=FALSE, message=FALSE}
@@ -39,7 +56,9 @@ movies %>%
   arrange(desc(n))
 
 ```
-- Produce a table with the average gross earning and budget (`gross` and `budget`) by genre. Calculate a variable `return_on_budget` which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this `return_on_budget` in descending order
+
+First, I produce a table with the average gross earning and budget (`gross` and `budget`) by genre. Calculate a variable `return_on_budget` which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this `return_on_budget` in descending order. 
+
 ```{R,movies_average}
 movies %>% 
   group_by(genre) %>% 
@@ -59,7 +78,7 @@ movies_ret
 
 ```
 
-- Produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. Don't just show the total gross amount, but also the mean, median, and standard deviation per director.
+Second, I produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. 
 ```{R,movies_directors}
 directors_top15 <- movies %>% 
   group_by(director) %>% 
@@ -74,7 +93,7 @@ directors_top15
 
 ```
 
-- Finally, ratings. Produce a table that describes how ratings are distributed by genre. We don't want just the mean, but also, min, max, median, SD and some kind of a histogram or density graph that visually shows how ratings are distributed.
+-Lastly, I produce a table that describes how ratings are distributed by genre. 
 ```{R,movies_rating}
 
 movies_rating_table<-movies %>% 
@@ -118,10 +137,9 @@ ggplot(
   geom_density()
 ```
 
-## Use `ggplot` to answer the following
 
-  - Examine the relationship between `gross` and `cast_facebook_likes`. Produce a scatterplot and write one sentence discussing whether the number of facebook likes that the cast has received is likely to be a good predictor of how much money a movie will make at the box office. What variable are you going to map to the Y- and X- axes?
-  
+
+To further visualize my findings, I will examine the relationship between the gross return of movies and their facebook likes.
   
 ```{r, gross_on_fblikes}
 ggplot(
@@ -134,10 +152,10 @@ ggplot(
   geom_smooth()
 
 ```
-The number of facebook likes that the cast has received is not likely to be a good predictor of how much money a movie will make at the box office but it can be a good indicator when the number of likes reaches a certain level. 
+As illustrated by the plot, the number of facebook likes that the cast has received is not likely to be a good predictor of how much money a movie will make at the box office but it can be a good indicator when the number of likes reaches a certain level. 
 
 
-  - Examine the relationship between `gross` and `budget`. Produce a scatterplot and write one sentence discussing whether budget is likely to be a good predictor of how much money a movie will make at the box office.
+Then, I will examine the relationship between the gross return of movies and and their budget. 
 
 ```{r, gross_on_budget}
 ggplot(
@@ -148,10 +166,11 @@ ggplot(
     geom_point()+
   geom_smooth()
 ```
-The budget is likely to be a good indicator of how much money a movie will make at the box office. 
+
+I find that the budget is likely to be a good indicator of how much money a movie will make at the box office. 
   
   
-  - Examine the relationship between `gross` and `rating`. Produce a scatterplot, faceted by `genre` and discuss whether IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office. Is there anything strange in this dataset?
+I produce a similar plot for IMDB ratings. 
 
 ```{r, gross_on_rating}
 gross_rating_scatterplot<-
@@ -167,6 +186,7 @@ gross_rating_scatterplot<-
 gross_rating_scatterplot+
   facet_wrap(~genre)
 ```
-IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office for certain genres such as action and comedy but it is difficult to make assumptions for some genres such as thriller, musical and romance due to lack of data.
-One strange thing about this plot is that in some charts there are multiple levels of gross for a given level of rating. 
+
+According to this plot, IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office for certain genres such as action and comedy but it is difficult to make assumptions for some genres such as thriller, musical and romance due to lack of data.
+ 
 

@@ -4,8 +4,9 @@ site: blogdown:::blogdown_site
 
 
 
-<div id="analysis-of-movies--imdb-dataset" class="section level1">
-<h1>Analysis of movies- IMDB dataset</h1>
+<div id="analysis-of-movies-based-on-imdb-dataset" class="section level1">
+<h1>Analysis of movies based on IMDB dataset</h1>
+<p>I’m a big fan watching movies. In this project, I will look at a subset sample of movies, taken from the Kaggle IMDB 5000 movie dataset. I would like to explore what factors influence the gross return of a movie.</p>
 <pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))
 glimpse(movies)</code></pre>
 <pre><code>## Rows: 2,961
@@ -15,7 +16,7 @@ glimpse(movies)</code></pre>
 ## $ director            &lt;chr&gt; &quot;James Cameron&quot;, &quot;James Cameron&quot;, &quot;Colin Trevor...
 ## $ year                &lt;dbl&gt; 2009, 1997, 2015, 2012, 2008, 1999, 1977, 2015,...
 ## $ duration            &lt;dbl&gt; 178, 194, 124, 173, 152, 136, 125, 141, 164, 93...
-## $ gross               &lt;dbl&gt; 760505847, 658672302, 652177271, 623279547, 533...
+## $ gross               &lt;dbl&gt; 7.61e+08, 6.59e+08, 6.52e+08, 6.23e+08, 5.33e+0...
 ## $ budget              &lt;dbl&gt; 2.37e+08, 2.00e+08, 1.50e+08, 2.20e+08, 1.85e+0...
 ## $ cast_facebook_likes &lt;dbl&gt; 4834, 45223, 8458, 87697, 57802, 37723, 13485, ...
 ## $ votes               &lt;dbl&gt; 886204, 793059, 418214, 995415, 1676169, 534658...
@@ -27,7 +28,6 @@ movies %&gt;%
   group_by(genre) %&gt;% 
   summarise(n=n()) %&gt;% 
   arrange(desc(n))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 17 x 2
 ##    genre           n
 ##    &lt;chr&gt;       &lt;int&gt;
@@ -48,14 +48,11 @@ movies %&gt;%
 ## 15 Romance         2
 ## 16 Western         2
 ## 17 Thriller        1</code></pre>
-<ul>
-<li>Produce a table with the average gross earning and budget (<code>gross</code> and <code>budget</code>) by genre. Calculate a variable <code>return_on_budget</code> which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this <code>return_on_budget</code> in descending order</li>
-</ul>
+<p>First, I produce a table with the average gross earning and budget (<code>gross</code> and <code>budget</code>) by genre. Calculate a variable <code>return_on_budget</code> which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this <code>return_on_budget</code> in descending order.</p>
 <pre class="r"><code>movies %&gt;% 
   group_by(genre) %&gt;% 
   summarise(avg_gross=mean(gross),
             avg_budget=mean(budget))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 17 x 3
 ##    genre        avg_gross avg_budget
 ##    &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;
@@ -81,9 +78,9 @@ movies %&gt;%
   summarise(avg_gross=mean(gross),
             avg_budget=mean(budget)) %&gt;% 
   mutate(return_on_budget=avg_gross/avg_budget) %&gt;% 
-  arrange(desc(return_on_budget))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>movies_ret</code></pre>
+  arrange(desc(return_on_budget))
+
+movies_ret</code></pre>
 <pre><code>## # A tibble: 17 x 4
 ##    genre        avg_gross avg_budget return_on_budget
 ##    &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
@@ -104,9 +101,7 @@ movies %&gt;%
 ## 15 Action       86583860.  71354888.          1.21   
 ## 16 Sci-Fi       29788371.  27607143.          1.08   
 ## 17 Thriller         2468     300000           0.00823</code></pre>
-<ul>
-<li>Produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. Don’t just show the total gross amount, but also the mean, median, and standard deviation per director.</li>
-</ul>
+<p>Second, I produce a table that shows the top 15 directors who have created the highest gross revenue in the box office.</p>
 <pre class="r"><code>directors_top15 &lt;- movies %&gt;% 
   group_by(director) %&gt;% 
   summarise(total_gross=sum(gross),
@@ -114,9 +109,9 @@ movies %&gt;%
             median_gross=median(gross),
             stdev_gross=sd(gross)) %&gt;% 
   arrange(desc(total_gross)) %&gt;% 
-  head(15)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>directors_top15</code></pre>
+  head(15)
+
+directors_top15</code></pre>
 <pre><code>## # A tibble: 15 x 5
 ##    director          total_gross mean_gross median_gross stdev_gross
 ##    &lt;chr&gt;                   &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
@@ -135,18 +130,16 @@ movies %&gt;%
 ## 13 Andrew Adamson     1137446920 284361730    279680930.  120895765.
 ## 14 Shawn Levy         1129750988 102704635.    85463309    65484773.
 ## 15 Ridley Scott       1128857598  80632686.    47775715    68812285.</code></pre>
-<ul>
-<li>Finally, ratings. Produce a table that describes how ratings are distributed by genre. We don’t want just the mean, but also, min, max, median, SD and some kind of a histogram or density graph that visually shows how ratings are distributed.</li>
-</ul>
+<p>-Lastly, I produce a table that describes how ratings are distributed by genre.</p>
 <pre class="r"><code>movies_rating_table&lt;-movies %&gt;% 
   group_by(genre) %&gt;% 
   summarise(mean_rating=mean(rating),
             min_rating=min(rating),
             max_rating=max(rating),
             median_rating=median(rating),
-            stdev_rating=STDEV(rating)) </code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>movies_rating_table</code></pre>
+            stdev_rating=STDEV(rating)) 
+
+movies_rating_table</code></pre>
 <pre><code>## # A tibble: 17 x 6
 ##    genre       mean_rating min_rating max_rating median_rating stdev_rating
 ##    &lt;chr&gt;             &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
@@ -172,37 +165,32 @@ movies %&gt;%
   mapping=aes(
     x=mean_rating))+
   geom_density()</code></pre>
-<p><img src="/blogs/movie_files/figure-html/movies_rating-1.png" width="672" /></p>
+<p><img src="/blogs/movie_files/figure-html/movies_rating-1.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot(
   data=movies_rating_table,
   mapping=aes(
     x=min_rating))+
   geom_density()</code></pre>
-<p><img src="/blogs/movie_files/figure-html/movies_rating-2.png" width="672" /></p>
+<p><img src="/blogs/movie_files/figure-html/movies_rating-2.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot(
   data=movies_rating_table,
   mapping=aes(
     x=max_rating))+
   geom_density()</code></pre>
-<p><img src="/blogs/movie_files/figure-html/movies_rating-3.png" width="672" /></p>
+<p><img src="/blogs/movie_files/figure-html/movies_rating-3.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot(
   data=movies_rating_table,
   mapping=aes(
     x=median_rating))+
   geom_density()</code></pre>
-<p><img src="/blogs/movie_files/figure-html/movies_rating-4.png" width="672" /></p>
+<p><img src="/blogs/movie_files/figure-html/movies_rating-4.png" width="648" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot(
   data=movies_rating_table,
   mapping=aes(
     x=stdev_rating))+
   geom_density()</code></pre>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="/blogs/movie_files/figure-html/movies_rating-5.png" width="672" /></p>
-<div id="use-ggplot-to-answer-the-following" class="section level2">
-<h2>Use <code>ggplot</code> to answer the following</h2>
-<ul>
-<li>Examine the relationship between <code>gross</code> and <code>cast_facebook_likes</code>. Produce a scatterplot and write one sentence discussing whether the number of facebook likes that the cast has received is likely to be a good predictor of how much money a movie will make at the box office. What variable are you going to map to the Y- and X- axes?</li>
-</ul>
+<p><img src="/blogs/movie_files/figure-html/movies_rating-5.png" width="648" style="display: block; margin: auto;" /></p>
+<p>To further visualize my findings, I will examine the relationship between the gross return of movies and their facebook likes.</p>
 <pre class="r"><code>ggplot(
   data=movies,
   mapping=aes(
@@ -211,16 +199,9 @@ movies %&gt;%
     geom_point()+
   scale_x_log10()+
   geom_smooth()</code></pre>
-<pre><code>## Warning: Transformation introduced infinite values in continuous x-axis
-
-## Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
-<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
-<p><img src="/blogs/movie_files/figure-html/gross_on_fblikes-1.png" width="672" />
-The number of facebook likes that the cast has received is not likely to be a good predictor of how much money a movie will make at the box office but it can be a good indicator when the number of likes reaches a certain level.</p>
-<ul>
-<li>Examine the relationship between <code>gross</code> and <code>budget</code>. Produce a scatterplot and write one sentence discussing whether budget is likely to be a good predictor of how much money a movie will make at the box office.</li>
-</ul>
+<p><img src="/blogs/movie_files/figure-html/gross_on_fblikes-1.png" width="648" style="display: block; margin: auto;" />
+As illustrated by the plot, the number of facebook likes that the cast has received is not likely to be a good predictor of how much money a movie will make at the box office but it can be a good indicator when the number of likes reaches a certain level.</p>
+<p>Then, I will examine the relationship between the gross return of movies and and their budget.</p>
 <pre class="r"><code>ggplot(
   data=movies,
   mapping=aes(
@@ -228,12 +209,9 @@ The number of facebook likes that the cast has received is not likely to be a go
     y=gross))+
     geom_point()+
   geom_smooth()</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
-<p><img src="/blogs/movie_files/figure-html/gross_on_budget-1.png" width="672" />
-The budget is likely to be a good indicator of how much money a movie will make at the box office.</p>
-<ul>
-<li>Examine the relationship between <code>gross</code> and <code>rating</code>. Produce a scatterplot, faceted by <code>genre</code> and discuss whether IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office. Is there anything strange in this dataset?</li>
-</ul>
+<p><img src="/blogs/movie_files/figure-html/gross_on_budget-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>I find that the budget is likely to be a good indicator of how much money a movie will make at the box office.</p>
+<p>I produce a similar plot for IMDB ratings.</p>
 <pre class="r"><code>gross_rating_scatterplot&lt;-
   ggplot(
     data=movies,
@@ -246,8 +224,6 @@ The budget is likely to be a good indicator of how much money a movie will make 
 
 gross_rating_scatterplot+
   facet_wrap(~genre)</code></pre>
-<p><img src="/blogs/movie_files/figure-html/gross_on_rating-1.png" width="672" />
-IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office for certain genres such as action and comedy but it is difficult to make assumptions for some genres such as thriller, musical and romance due to lack of data.
-One strange thing about this plot is that in some charts there are multiple levels of gross for a given level of rating.</p>
-</div>
+<p><img src="/blogs/movie_files/figure-html/gross_on_rating-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>According to this plot, IMDB ratings are likely to be a good predictor of how much money a movie will make at the box office for certain genres such as action and comedy but it is difficult to make assumptions for some genres such as thriller, musical and romance due to lack of data.</p>
 </div>
