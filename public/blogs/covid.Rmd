@@ -36,6 +36,7 @@ library(vroom)
 ```
 
 In early December 2019, an outbreak of a novel coronavirus disease (COVID-19) occurred in China and then rapidly spread throughout the globe, putting the world on alert. 
+
 There are well over 3 million entries of individual, de-identified patient data at Centers for Disease Control and Prevention. In this project, I investigate how COVID-19 mortality risk differs between genders across different age groups.
 
 ```{r, cache=TRUE}
@@ -51,7 +52,6 @@ Next, I produced two graphs that show death % rate:
 
 1. by age group, sex, and whether the patient had co-morbidities or not
 2. by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not.
-
 
 ```{r covid_challenge, echo=FALSE, out.width="100%"}
 knitr::include_graphics(here::here("images", "covid_death_rate_comorbidities.png"), error = FALSE)

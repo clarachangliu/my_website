@@ -83,109 +83,6 @@
                             
 
 
-<pre><code>## -- Attaching packages ---------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.2     v purrr   0.3.4
-## v tibble  3.0.3     v dplyr   1.0.1
-## v tidyr   1.1.1     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts ------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;mosaic&#39;:
-##   method                           from   
-##   fortify.SpatialPolygonsDataFrame ggplot2</code></pre>
-<pre><code>## 
-## The &#39;mosaic&#39; package masks several functions from core packages in order to add 
-## additional features.  The original behavior of these functions should not be affected by this.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;mosaic&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:Matrix&#39;:
-## 
-##     mean</code></pre>
-<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
-## 
-##     count, do, tally</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     cross</code></pre>
-<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     stat</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     binom.test, cor, cor.test, cov, fivenum, IQR, median, prop.test,
-##     quantile, sd, t.test, var</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     max, mean, min, prod, range, sample, sum</code></pre>
-<pre><code>## 
-## Attaching package: &#39;ggthemes&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:mosaic&#39;:
-## 
-##     theme_map</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
-##   method from   
-##   +.gg   ggplot2</code></pre>
-<pre><code>## here() starts at C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website</code></pre>
-<pre><code>## 
-## Attaching package: &#39;skimr&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:mosaic&#39;:
-## 
-##     n_missing</code></pre>
-<pre><code>## 
-## Attaching package: &#39;janitor&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     chisq.test, fisher.test</code></pre>
-<pre><code>## Loading required package: lubridate</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre><code>## Loading required package: PerformanceAnalytics</code></pre>
-<pre><code>## Loading required package: xts</code></pre>
-<pre><code>## Loading required package: zoo</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre><code>## 
-## Attaching package: &#39;xts&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
-## 
-##     first, last</code></pre>
-<pre><code>## 
-## Attaching package: &#39;PerformanceAnalytics&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     legend</code></pre>
-<pre><code>## Loading required package: quantmod</code></pre>
-<pre><code>## Loading required package: TTR</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
-##   method            from
-##   as.zoo.data.frame zoo</code></pre>
-<pre><code>## Version 0.4-0 included new data defaults. See ?getSymbols.</code></pre>
-<pre><code>## == Need to Learn tidyquant? =============================
-## Business Science offers a 1-hour course - Learning Lab #9: Performance Analysis &amp; Portfolio Optimization with tidyquant!
-## &lt;/&gt; Learn more at: https://university.business-science.io/p/learning-labs-pro &lt;/&gt;</code></pre>
-<pre><code>## 
-## Attaching package: &#39;infer&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:mosaic&#39;:
-## 
-##     prop_test, t_test</code></pre>
-<pre><code>## Loading required package: airports</code></pre>
-<pre><code>## Loading required package: cherryblossom</code></pre>
-<pre><code>## Loading required package: usdata</code></pre>
-<pre><code>## 
-## Attaching package: &#39;openintro&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:mosaic&#39;:
-## 
-##     dotPlot</code></pre>
-<pre><code>## The following objects are masked from &#39;package:lattice&#39;:
-## 
-##     ethanol, lsegments</code></pre>
 <div id="gdp-components-over-time-and-among-countries" class="section level1">
 <h1>GDP components over time and among countries</h1>
 <p>At the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports).</p>
@@ -220,32 +117,20 @@
          isic_jp = 18,
          total_value_added = 19,
          inventory_changes = 20) %&gt;% 
-  pivot_longer(cols = 4:20, names_to = &quot;IndicatorName&quot;, values_to = &quot;values&quot;)</code></pre>
-<pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
-## Please use a list of either functions or lambdas: 
-## 
-##   # Simple named list: 
-##   list(mean = mean, median = median)
-## 
-##   # Auto named with `tibble::lst()`: 
-##   tibble::lst(mean, median)
-## 
-##   # Using lambdas
-##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>glimpse(tidy_GDP_data)</code></pre>
+  pivot_longer(cols = 4:20, names_to = &quot;IndicatorName&quot;, values_to = &quot;values&quot;)
+
+glimpse(tidy_GDP_data)</code></pre>
 <pre><code>## Rows: 179,520
 ## Columns: 5
 ## $ CountryID     &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,...
 ## $ Country       &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghani...
 ## $ year          &lt;dbl&gt; 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970,...
 ## $ IndicatorName &lt;chr&gt; &quot;final_consumption_exp&quot;, &quot;household_exp&quot;, &quot;government...
-## $ values        &lt;dbl&gt; 5.5590690, 5.0650916, 0.3724785, 0.9845781, 0.9845781...</code></pre>
+## $ values        &lt;dbl&gt; 5.559, 5.065, 0.372, 0.985, 0.985, 0.112, 0.184, 10.7...</code></pre>
 <pre class="r"><code># Let us compare GDP components for these 3 countries
 country_list &lt;- c(&quot;United States&quot;,&quot;India&quot;, &quot;Germany&quot;)</code></pre>
 <pre class="r"><code>knitr::include_graphics(here::here(&quot;images&quot;, &quot;gdp1.png&quot;), error = FALSE)</code></pre>
-<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/gdp1.png" width="100%" /></p>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/gdp1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#Filtering relevant variables
 filter_tidy &lt;- tidy_GDP_data %&gt;% 
 filter(
@@ -265,11 +150,11 @@ gdp_components &lt;- ggplot(filter_tidy, aes(x = year, y = values, colour = Indi
   NULL
   
   gdp_components</code></pre>
-<p><img src="/blogs/gdp_files/figure-html/gdp1-2.png" width="100%" />
-This chart illustrates that household expenditure accounts for the largest part of GDP and consistently increases from 1970 to 2010 across three countries.</p>
+<p><img src="/blogs/gdp_files/figure-html/gdp1-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>This chart illustrates that household expenditure accounts for the largest part of GDP and consistently increases from 1970 to 2010 across three countries.</p>
 <p>The rest of the GDP components differ from country to country. For example, Germany enjoys a trade surplus while the U.S. has an increasingly sizable trade deficit.</p>
 <pre class="r"><code>knitr::include_graphics(here::here(&quot;images&quot;, &quot;gdp2.png&quot;), error = FALSE)</code></pre>
-<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/gdp2.png" width="100%" /></p>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/gdp2.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>tidy_GDP_data2 &lt;- UN_GDP_data %&gt;% 
   #Reshaping data into tidy format
   pivot_longer(cols = 4:51,
@@ -315,7 +200,7 @@ gdp_components2 &lt;- ggplot(filter_tidy2, aes(x = year, y = proportion, colour 
   NULL
   
 gdp_components2</code></pre>
-<p><img src="/blogs/gdp_files/figure-html/gdp2-2.png" width="100%" /></p>
+<p><img src="/blogs/gdp_files/figure-html/gdp2-2.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#Comparing calculated GDP to GDP that is given
 filter_tidy3 &lt;- tidy_GDP_data2 %&gt;% 
   filter(Country %in% country_list,
@@ -330,7 +215,7 @@ gdp_components3 &lt;- ggplot(filter_tidy3, aes(x = year, y = proportion, colour 
   theme_bw()
 
 gdp_components3</code></pre>
-<p><img src="/blogs/gdp_files/figure-html/gdp2-3.png" width="100%" /></p>
+<p><img src="/blogs/gdp_files/figure-html/gdp2-3.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>This chart illustrates the evolution over time of GDP components as a % of total GDP. We can notice that while the US has known some small changes, India has experienced large shifts in some of its components.</p>
 <p>India has seen a boom in its gross capital formation illustrating large inflows of capital that came in the Indian economy. The share of its household expenditure declined. This decline is relative to GDP so it is likely that Indian GDP increased highly while household expenditure stagnated.</p>
 <p>Germany has considerably increased the share of its Net exports, illustrating the success of the German manufacturing industry.</p>

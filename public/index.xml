@@ -24,7 +24,8 @@ summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 2
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/blogs/covid/</guid>
-      <description>CDC COVID-19 Public Use DataIn early December 2019, an outbreak of a novel coronavirus disease (COVID-19) occurred in China and then rapidly spread throughout the globe, putting the world on alert.There are well over 3 million entries of individual, de-identified patient data at Centers for Disease Control and Prevention. In this project, I investigate how COVID-19 mortality risk differs between genders across different age groups.
+      <description>CDC COVID-19 Public Use DataIn early December 2019, an outbreak of a novel coronavirus disease (COVID-19) occurred in China and then rapidly spread throughout the globe, putting the world on alert.
+There are well over 3 million entries of individual, de-identified patient data at Centers for Disease Control and Prevention. In this project, I investigate how COVID-19 mortality risk differs between genders across different age groups.
 # URL link to CDC to download dataurl &amp;lt;- &amp;quot;https://data.</description>
     </item>
     
@@ -34,7 +35,8 @@ summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 2
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/blogs/gdp/</guid>
-      <description>## -- Attaching packages ---------------- tidyverse 1.3.0 --## v ggplot2 3.3.2 v purrr 0.3.4## v tibble 3.0.3 v dplyr 1.0.1## v tidyr 1.1.1 v stringr 1.4.0## v readr 1.3.1 v forcats 0.5.0## -- Conflicts ------------------- tidyverse_conflicts() --## x dplyr::filter() masks stats::filter()## x dplyr::lag() masks stats::lag()## Registered S3 method overwritten by &amp;#39;mosaic&amp;#39;:## method from ## fortify.SpatialPolygonsDataFrame ggplot2## ## The &amp;#39;mosaic&amp;#39; package masks several functions from core packages in order to add ## additional features.</description>
+      <description>GDP components over time and among countriesAt the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports).
+The GDP data I will look at is from the United Nations’ National Accounts Main Aggregates Database, which contains estimates of total GDP and its components for all countries from 1970 to today.</description>
     </item>
     
     <item>
