@@ -46,6 +46,7 @@ movies <- read_csv(here::here("data", "movies.csv"))
 glimpse(movies)
 
 ```
+The table below shows how many movies there are in each genre in my data set. 
 
 ```{R,movies_by_genre}
 #Produce a table with the count of movies by genre, ranked in descending order
