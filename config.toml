@@ -39,11 +39,11 @@ disqusShortname = ""
   [params.navigation]
     title = "Clara's projects"
     subtitle = " "
-    menu = "Menu"
+  #  menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
 
-    [[params.navigation.links]]
+  #  [[params.navigation.links]]
       name = "Home"
       url = "#"
 
