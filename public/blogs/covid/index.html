@@ -1,0 +1,319 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="An LBS MFA2021 student pursuing a career in finance">
+	<meta name="author" content="Clara Liu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title> &middot; Portfolio Website of Clara Liu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Clara&#39;s projects</strong> <span> </span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+                <li><a href="/elements.html">Elements</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1></h1>
+                            </header>
+                            
+                            
+
+
+<div id="cdc-covid-19-public-use-data" class="section level1">
+<h1>CDC COVID-19 Public Use Data</h1>
+<p>Let us revisit the <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a>. There are well over 3 million entries of individual, de-identified patient data. Since this is a large file, I suggest you use <code>vroom</code> to load it and you keep <code>cache=TRUE</code> in the chunk options.</p>
+<pre class="r"><code># file contains 11 variables and 3.66m rows and is well over 380Mb. 
+# It will take time to download
+
+# URL link to CDC to download data
+url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
+
+covid_data &lt;- vroom::vroom(url)%&gt;% # If vroom::vroom(url) doesn&#39;t work, use read_csv(url)
+  clean_names()</code></pre>
+<p>Given the data we have, I would like you to produce two graphs that show death % rate:</p>
+<ol style="list-style-type: decimal">
+<li>by age group, sex, and whether the patient had co-morbidities or not</li>
+<li>by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not.</li>
+</ol>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/covid_death_rate_comorbidities.png" width="100%" style="display: block; margin: auto;" /><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/covid_death_rate_icu.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#by age group, sex, and whether the patient had co-morbidities or not
+
+covid_data %&gt;% 
+  filter(!medcond_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;)) %&gt;% 
+  filter(!sex %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;, NA)) %&gt;% 
+  filter(!age_group %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;)) %&gt;% 
+  mutate(death_rate_binary = case_when(death_yn == &quot;Yes&quot; ~ 1, 
+                                       TRUE ~ 0)) %&gt;%
+  group_by(age_group, sex, medcond_yn) %&gt;% 
+  summarise(death_percent = mean(death_rate_binary)*100) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(comorbidities = case_when(medcond_yn == &quot;Yes&quot; ~ &quot;With Comorbidities&quot;, 
+                            TRUE ~ &quot;Without Comorbidities&quot;)) %&gt;% 
+  ggplot() +
+  geom_bar(aes(death_percent,  age_group), stat = &quot;identity&quot;, fill = &quot;#4863A0&quot;, alpha = 0.8) + 
+  geom_text(aes(death_percent, y = age_group, label = round(death_percent, 1)), hjust = -0.1,  size = 3) + 
+  facet_grid(comorbidities ~  sex) +
+    labs(
+    
+    x = &quot;&quot;, 
+    y = &quot;&quot;, 
+    title = &quot;Covid death % by age group, sex and presence of co-morbidities&quot;
+    
+  ) + 
+   theme_bw() +
+   theme(plot.title = element_text(size=11)) </code></pre>
+<p><img src="/blogs/covid_files/figure-html/co-morbidities-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#by age group, sex, and whether the patient had  admited to Intensive Care Unit (ICU) or not.
+
+covid_data %&gt;% 
+  mutate(death_rate_binary = case_when(death_yn == &quot;Yes&quot; ~ 1, 
+                                       TRUE ~ 0)) %&gt;%
+  group_by(age_group, sex, icu_yn) %&gt;% 
+  summarise(death_percent = mean(death_rate_binary)*100) %&gt;% 
+  ungroup() %&gt;% 
+  filter(!icu_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;)) %&gt;% 
+  filter(!sex %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;, NA)) %&gt;% 
+  filter(!age_group %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;)) %&gt;% 
+  mutate(icu_admitted = case_when(icu_yn == &quot;Yes&quot; ~ &quot;Admitted to ICU&quot;, 
+                            TRUE ~ &quot;NO ICU&quot;)) %&gt;% 
+  ggplot() +
+  geom_bar(aes(death_percent,  age_group), stat = &quot;identity&quot;, fill = &quot;#E77471&quot;, alpha = 0.8) + 
+  geom_text(aes(death_percent, y = age_group, label = round(death_percent, 1)), hjust = -0.1,  size = 3) + 
+  facet_grid(icu_admitted ~  sex) + 
+  labs(
+    
+    x = &quot;&quot;, 
+    y = &quot;&quot;, 
+    title = &quot;Covid death % by age group, sex and whether patient was admitted to ICU&quot;
+    
+  ) + 
+   theme_bw() + 
+     theme(plot.title = element_text(size=11))</code></pre>
+<p><img src="/blogs/covid_files/figure-html/ICU-1.png" width="648" style="display: block; margin: auto;" />
+Besides the graphs, make sure your code is easy to read and understand– imagine if you revisit this six months from now. you should be able to follow what you were doing!</p>
+</div>
+<div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
+<h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
+<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201017%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20201017T001225Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=5f199a3f235e8d3d1ae82bb1ee35b36353d63364f57ed63366c177b88aa0f237&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-10-17 00:12
+##   Status: 200
+##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+##   Size: 165 kB
+## &lt;ON DISK&gt;  C:\Users\CLARAL~1\AppData\Local\Temp\Rtmp8uboG6\filec681ad431ce.xlsx</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))
+
+# change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<p>We can easily create a facet grid that plots bikes hired by month and year.</p>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Look at May and Jun and compare 2020 with the previous years. What’s happening?</p>
+<p>However, the challenge I want you to work on is to reproduce the following two graphs.</p>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The second one looks at percentage changes from the expected level of weekly rentals. The two grey shaded rectangles correspond to the second (weeks 14-26) and fourth (weeks 40-52) quarters.</p>
+<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#First graph
+
+bikes_exp &lt;- bike %&gt;% 
+  filter(year &gt;= 2015 &amp; year &lt;= 2019) %&gt;% 
+  group_by(month) %&gt;% 
+  summarise(expected_hires = mean(bikes_hired)) %&gt;% 
+  ungroup()
+
+  bike %&gt;% 
+  filter(year &gt;= 2015 &amp; year &lt;= 2020) %&gt;% 
+  group_by(month, year) %&gt;% 
+  summarise(actual_hires = mean(bikes_hired)) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(bikes_exp, by = &quot;month&quot;) %&gt;% 
+  mutate(excess_hires = actual_hires - expected_hires) %&gt;% 
+  mutate(excess_pos = ifelse(excess_hires &gt;= 0, actual_hires, expected_hires)) %&gt;%  
+    mutate(excess_neg = ifelse(excess_hires &lt; 0, actual_hires, expected_hires)) %&gt;%  
+  ggplot(aes(x = month, y =expected_hires, group = 1, fill = excess_hires)) +
+  stat_summary(fun.y=sum, geom=&quot;line&quot;, color = &quot;darkblue&quot;, size = 0.3) + 
+  geom_line(aes(month, actual_hires), color = &quot;black&quot;, size = 0.1, alpha = 0.5)+
+  geom_ribbon(aes(ymin = excess_neg , ymax = expected_hires), fill = &quot;#E77471&quot;, alpha = 0.8) +
+      geom_ribbon(aes(ymin = expected_hires , ymax = excess_pos), fill = &quot;#90EE90&quot;, alpha = 0.8) +
+#  scale_fill_manual(values=c(&quot;green&quot;, &quot;red&quot;), name = &quot;fill&quot;) +
+  facet_wrap(~ year) + 
+  theme_bw() + 
+  labs(
+    y = &quot;Bikes Rentals&quot;,
+    x = &quot;&quot;, 
+    title = &quot;Monthly Changes in TFL Bike Rentals&quot;, 
+    subtitle = &quot;Change form monthly average shown in blue \nand calculated between 2015-2019&quot;
+    
+  ) + 
+    
+    theme(plot.title = element_text(size=12, face = &quot;bold&quot;), plot.subtitle = element_text(size = 10), 
+          axis.text.x = element_text(hjust=1, size = 6))</code></pre>
+<p><img src="/blogs/covid_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Second graph
+
+bikes_exp &lt;- bike %&gt;% 
+  filter(year &gt;= 2015 &amp; year &lt;= 2019) %&gt;% 
+  group_by(week) %&gt;% 
+  summarise(expected_hires = mean(bikes_hired)) %&gt;% 
+  ungroup()
+
+  bike %&gt;% 
+  filter(year &gt;= 2015 &amp; year &lt;= 2020) %&gt;% 
+  group_by(week, year) %&gt;% 
+  summarise(actual_hires = mean(bikes_hired)) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(bikes_exp, by = &quot;week&quot;) %&gt;% 
+  mutate(excess_hires = (actual_hires - expected_hires)/expected_hires) %&gt;% 
+  mutate(group = ifelse(excess_hires &gt; 0, &quot;Postive&quot;, &quot;Negative&quot;)) %&gt;% 
+  mutate(excess_pos = ifelse(excess_hires &gt;= 0, actual_hires, expected_hires)) %&gt;%  
+  mutate(excess_neg = ifelse(excess_hires &lt; 0, actual_hires, expected_hires)) %&gt;%  
+  ggplot(aes(x=week, y= excess_hires)) +
+  geom_area(alpha=0.4, fill = &quot;#90EE90&quot;, alpha = 0.8) +
+  geom_ribbon(aes(ymin = ifelse(excess_hires &gt; 0,0, excess_hires), ymax =0 ), fill = &quot;#E77471&quot;, alpha = 0.8) + 
+  geom_line(color=&quot;#696969&quot;, size=0.15) +
+  geom_rug(sides = &quot;b&quot;, aes(color = group, show.legend = FALSE)) + 
+  scale_fill_manual(values = c(&#39;#90EE90&#39;, &#39;#E77471&#39;)) +
+  scale_y_continuous(labels = function(x) paste0(x*100, &quot;%&quot;)) + 
+  facet_wrap(~ year)+
+  theme_bw() + 
+      labs(
+    y = &quot;Bikes Rentals&quot;,
+    x = &quot;&quot;, 
+    title = &quot;Weekly Changes in TFL Bike Rentals&quot;, 
+    subtitle = &quot;Change form mweekly averages \ncalculated between 2015-2019&quot;
+    
+  ) + 
+    
+    theme(plot.title = element_text(size=12, face = &quot;bold&quot;), plot.subtitle = element_text(size = 10), 
+          axis.text.x = element_text(hjust=1, size = 10), legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/blogs/covid_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
+<p>Should you use the mean or the median to calculate your expected rentals? Why?
+&gt;I used mean here, but median is usually used when there are many outliers. In this data I didn’t notice many of them.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://github.com/clarachangliu/my_website.git" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/chang-l-a94222120" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Clara Liu</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

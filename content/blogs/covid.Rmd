@@ -1,0 +1,256 @@
+---
+site: blogdown:::blogdown_site
+---
+
+# CDC COVID-19 Public Use Data
+
+```{r, setup, include=FALSE}
+options(knitr.duplicate.label = "allow")
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+```
+Let us revisit the [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf). There are well over 3 million entries of individual, de-identified patient data. Since this is a large file, I suggest you use `vroom` to load it and you keep `cache=TRUE` in the chunk options.
+
+
+```{r, cache=TRUE}
+# file contains 11 variables and 3.66m rows and is well over 380Mb. 
+# It will take time to download
+
+# URL link to CDC to download data
+url <- "https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD"
+
+covid_data <- vroom::vroom(url)%>% # If vroom::vroom(url) doesn't work, use read_csv(url)
+  clean_names()
+
+```
+
+Given the data we have, I would like you to produce two graphs that show death % rate:
+
+1. by age group, sex, and whether the patient had co-morbidities or not
+1. by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not.
+
+
+```{r covid_challenge, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "covid_death_rate_comorbidities.png"), error = FALSE)
+knitr::include_graphics(here::here("images", "covid_death_rate_icu.png"), error = FALSE)
+```
+
+```{r, co-morbidities}
+#by age group, sex, and whether the patient had co-morbidities or not
+
+covid_data %>% 
+  filter(!medcond_yn %in% c("Missing", "Unknown")) %>% 
+  filter(!sex %in% c("Missing", "Unknown", "Other", NA)) %>% 
+  filter(!age_group %in% c("Missing", "Unknown", "Other")) %>% 
+  mutate(death_rate_binary = case_when(death_yn == "Yes" ~ 1, 
+                                       TRUE ~ 0)) %>%
+  group_by(age_group, sex, medcond_yn) %>% 
+  summarise(death_percent = mean(death_rate_binary)*100) %>% 
+  ungroup() %>% 
+  mutate(comorbidities = case_when(medcond_yn == "Yes" ~ "With Comorbidities", 
+                            TRUE ~ "Without Comorbidities")) %>% 
+  ggplot() +
+  geom_bar(aes(death_percent,  age_group), stat = "identity", fill = "#4863A0", alpha = 0.8) + 
+  geom_text(aes(death_percent, y = age_group, label = round(death_percent, 1)), hjust = -0.1,  size = 3) + 
+  facet_grid(comorbidities ~  sex) +
+    labs(
+    
+    x = "", 
+    y = "", 
+    title = "Covid death % by age group, sex and presence of co-morbidities"
+    
+  ) + 
+   theme_bw() +
+   theme(plot.title = element_text(size=11)) 
+   
+```
+
+```{R, ICU}
+#by age group, sex, and whether the patient had  admited to Intensive Care Unit (ICU) or not.
+
+covid_data %>% 
+  mutate(death_rate_binary = case_when(death_yn == "Yes" ~ 1, 
+                                       TRUE ~ 0)) %>%
+  group_by(age_group, sex, icu_yn) %>% 
+  summarise(death_percent = mean(death_rate_binary)*100) %>% 
+  ungroup() %>% 
+  filter(!icu_yn %in% c("Missing", "Unknown")) %>% 
+  filter(!sex %in% c("Missing", "Unknown", "Other", NA)) %>% 
+  filter(!age_group %in% c("Missing", "Unknown", "Other")) %>% 
+  mutate(icu_admitted = case_when(icu_yn == "Yes" ~ "Admitted to ICU", 
+                            TRUE ~ "NO ICU")) %>% 
+  ggplot() +
+  geom_bar(aes(death_percent,  age_group), stat = "identity", fill = "#E77471", alpha = 0.8) + 
+  geom_text(aes(death_percent, y = age_group, label = round(death_percent, 1)), hjust = -0.1,  size = 3) + 
+  facet_grid(icu_admitted ~  sex) + 
+  labs(
+    
+    x = "", 
+    y = "", 
+    title = "Covid death % by age group, sex and whether patient was admitted to ICU"
+    
+  ) + 
+   theme_bw() + 
+     theme(plot.title = element_text(size=11))
+
+```
+Besides the graphs, make sure your code is easy to read and understand-- imagine if you revisit this six months from now. you should be able to follow what you were doing!
+
+
+# Challenge 2: Excess rentals in TfL bike sharing
+
+Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following
+
+```{r, get_tfl_data, cache=TRUE}
+url <- "https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx"
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp <- tempfile(fileext = ".xlsx")))
+
+# Use read_excel to read it as dataframe
+bike0 <- read_excel(bike.temp,
+                   sheet = "Data",
+                   range = cell_cols("A:B"))
+
+# change dates to get year, month, and week
+bike <- bike0 %>% 
+  clean_names() %>% 
+  rename (bikes_hired = number_of_bicycle_hires) %>% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))
+```
+
+
+
+We can easily create a facet grid that plots bikes hired by month and year.
+
+```{r tfl_month_year_grid, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_distributions_monthly.png"), error = FALSE)
+```
+
+Look at May and Jun and compare 2020 with the previous years. What's happening?
+
+However, the challenge I want you to work on is to reproduce the following two graphs.
+
+```{r tfl_absolute_monthly_change, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_monthly.png"), error = FALSE)
+```
+
+The second one looks at percentage changes from the expected level of weekly rentals. The two grey shaded rectangles correspond to the second (weeks 14-26) and fourth (weeks 40-52) quarters.
+
+```{r tfl_percent_change, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_weekly.png"), error = FALSE)
+```
+```{r, out.width="100%"}
+#First graph
+
+bikes_exp <- bike %>% 
+  filter(year >= 2015 & year <= 2019) %>% 
+  group_by(month) %>% 
+  summarise(expected_hires = mean(bikes_hired)) %>% 
+  ungroup()
+
+  bike %>% 
+  filter(year >= 2015 & year <= 2020) %>% 
+  group_by(month, year) %>% 
+  summarise(actual_hires = mean(bikes_hired)) %>% 
+  ungroup() %>% 
+  left_join(bikes_exp, by = "month") %>% 
+  mutate(excess_hires = actual_hires - expected_hires) %>% 
+  mutate(excess_pos = ifelse(excess_hires >= 0, actual_hires, expected_hires)) %>%  
+    mutate(excess_neg = ifelse(excess_hires < 0, actual_hires, expected_hires)) %>%  
+  ggplot(aes(x = month, y =expected_hires, group = 1, fill = excess_hires)) +
+  stat_summary(fun.y=sum, geom="line", color = "darkblue", size = 0.3) + 
+  geom_line(aes(month, actual_hires), color = "black", size = 0.1, alpha = 0.5)+
+  geom_ribbon(aes(ymin = excess_neg , ymax = expected_hires), fill = "#E77471", alpha = 0.8) +
+      geom_ribbon(aes(ymin = expected_hires , ymax = excess_pos), fill = "#90EE90", alpha = 0.8) +
+#  scale_fill_manual(values=c("green", "red"), name = "fill") +
+  facet_wrap(~ year) + 
+  theme_bw() + 
+  labs(
+    y = "Bikes Rentals",
+    x = "", 
+    title = "Monthly Changes in TFL Bike Rentals", 
+    subtitle = "Change form monthly average shown in blue \nand calculated between 2015-2019"
+    
+  ) + 
+    
+    theme(plot.title = element_text(size=12, face = "bold"), plot.subtitle = element_text(size = 10), 
+          axis.text.x = element_text(hjust=1, size = 6))
+
+```
+
+```{r}
+#Second graph
+
+bikes_exp <- bike %>% 
+  filter(year >= 2015 & year <= 2019) %>% 
+  group_by(week) %>% 
+  summarise(expected_hires = mean(bikes_hired)) %>% 
+  ungroup()
+
+  bike %>% 
+  filter(year >= 2015 & year <= 2020) %>% 
+  group_by(week, year) %>% 
+  summarise(actual_hires = mean(bikes_hired)) %>% 
+  ungroup() %>% 
+  left_join(bikes_exp, by = "week") %>% 
+  mutate(excess_hires = (actual_hires - expected_hires)/expected_hires) %>% 
+  mutate(group = ifelse(excess_hires > 0, "Postive", "Negative")) %>% 
+  mutate(excess_pos = ifelse(excess_hires >= 0, actual_hires, expected_hires)) %>%  
+  mutate(excess_neg = ifelse(excess_hires < 0, actual_hires, expected_hires)) %>%  
+  ggplot(aes(x=week, y= excess_hires)) +
+  geom_area(alpha=0.4, fill = "#90EE90", alpha = 0.8) +
+  geom_ribbon(aes(ymin = ifelse(excess_hires > 0,0, excess_hires), ymax =0 ), fill = "#E77471", alpha = 0.8) + 
+  geom_line(color="#696969", size=0.15) +
+  geom_rug(sides = "b", aes(color = group, show.legend = FALSE)) + 
+  scale_fill_manual(values = c('#90EE90', '#E77471')) +
+  scale_y_continuous(labels = function(x) paste0(x*100, "%")) + 
+  facet_wrap(~ year)+
+  theme_bw() + 
+      labs(
+    y = "Bikes Rentals",
+    x = "", 
+    title = "Weekly Changes in TFL Bike Rentals", 
+    subtitle = "Change form mweekly averages \ncalculated between 2015-2019"
+    
+  ) + 
+    
+    theme(plot.title = element_text(size=12, face = "bold"), plot.subtitle = element_text(size = 10), 
+          axis.text.x = element_text(hjust=1, size = 10), legend.position = "none")
+
+```
+
+
+For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation `excess_rentals = actual_rentals - expected_rentals`. 
+
+Should you use the mean or the median to calculate your expected rentals? Why?
+>I used mean here, but median is usually used when there are many outliers. In this data I didn't notice many of them.
+
+

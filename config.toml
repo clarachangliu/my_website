@@ -20,7 +20,7 @@ disqusShortname = ""
 
   # Provide your metadata here.
   name = "Clara Liu"
-  description = "LBS MFA2021 Student"
+  description = "An LBS MFA2021 student pursuing a career in finance"
 
   # Link custom assets relative to /static
   custom_css = []
@@ -37,7 +37,7 @@ disqusShortname = ""
 
   # Navigation Section
   [params.navigation]
-    title = "Projects"
+    title = "Clara's projects"
     subtitle = " "
     menu = "Menu"
     # Optional logo as brand stored in img/
@@ -95,25 +95,25 @@ disqusShortname = ""
       title = "GDP Analysis"
       subtitle = "GDP components over time and among countries"
       image = "pic01.jpg"
-      url = "blogs/aliquam"
+      url = "blogs/gdp"
 
     [[params.tiles.showcase]]
       title = "Movies Analysis"
       subtitle = "Explore factors that impact movie incomes"
       image = "pic_theater.jpg"
-      url = "blogs/tempus"
+      url = "blogs/movie"
 
     [[params.tiles.showcase]]
       title = "Yield Curve Analysis"
       subtitle = "The predictive power of yield curve inversion"
       image = "pic_yield.jpg"
-      url = "blogs/magna"
+      url = "blogs/yield"
 
     [[params.tiles.showcase]]
       title = "COVID-19 Death Rate Analysis"
       subtitle = "Explore the pattern of CDC COVID-19 public use data"
       image = "pic_covid.jpg"
-      url = "blogs/ipsum"
+      url = "blogs/covid"
 
    # [[params.tiles.showcase]]
     #  title = "Consequat"
