@@ -1,7 +1,9 @@
 ---
 site: blogdown:::blogdown_site
 ---
-```{r load-libraries, echo=FALSE}
+# GDP components over time and among countries
+
+```{r load-libraries, include=FALSE}
 library(tidyverse) 
 library(mosaic)
 library(ggthemes)
@@ -16,8 +18,6 @@ library(infer)
 library(openintro)
 library(tidyquant)
 ```
-
-# GDP components over time and among countries
 
 At the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). 
 
@@ -96,6 +96,7 @@ gdp_components <- ggplot(filter_tidy, aes(x = year, y = values, colour = Indicat
   gdp_components
   
 ```
+
 This chart illustrates that household expenditure accounts for the largest part of GDP and consistently increases from 1970 to 2010 across three countries. 
 
 The rest of the GDP components differ from country to country. For example, Germany enjoys a trade surplus while the U.S. has an increasingly sizable trade deficit.  
