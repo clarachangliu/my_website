@@ -55,9 +55,10 @@ movies &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;, &amp;quot;movies.
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/blogs/yield/</guid>
-      <description>#Yield curve inversion
-Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a inverted yield curve is can be found here. If you’d rather listen to something, here is a great podcast from NPR on yield curve indicators
-In addition, many articles and commentators think that, e.g., Yield curve inversion is viewed as a harbinger of recession.</description>
+      <description>Yield curve inversionEvery so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions.
+In addition, many articles and commentators think that, e.g., Yield curve inversion is viewed as a harbinger of recession.
+In this project, I can will explore whether inversions are truly a harbinger of recessions.
+I will look at US data and use the FRED database to download historical yield curve rates, and plot the yield curves since 1999 to see when the yield curves flatten.</description>
     </item>
     
   </channel>
