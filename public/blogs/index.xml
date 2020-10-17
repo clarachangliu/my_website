@@ -13,8 +13,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/blogs/covid/</guid>
-      <description>CDC COVID-19 Public Use DataLet us revisit the CDC Covid-19 Case Surveillance Data. There are well over 3 million entries of individual, de-identified patient data. Since this is a large file, I suggest you use vroom to load it and you keep cache=TRUE in the chunk options.
-# file contains 11 variables and 3.66m rows and is well over 380Mb. # It will take time to download# URL link to CDC to download dataurl &amp;lt;- &amp;quot;https://data.</description>
+      <description>CDC COVID-19 Public Use DataIn early December 2019, an outbreak of a novel coronavirus disease (COVID-19) occurred in China and then rapidly spread throughout the globe, putting the world on alert.There are well over 3 million entries of individual, de-identified patient data at Centers for Disease Control and Prevention. In this project, I investigate how COVID-19 mortality risk differs between genders across different age groups.
+# URL link to CDC to download dataurl &amp;lt;- &amp;quot;https://data.</description>
     </item>
     
     <item>

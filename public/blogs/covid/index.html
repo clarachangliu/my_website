@@ -85,16 +85,14 @@
 
 <div id="cdc-covid-19-public-use-data" class="section level1">
 <h1>CDC COVID-19 Public Use Data</h1>
-<p>Let us revisit the <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a>. There are well over 3 million entries of individual, de-identified patient data. Since this is a large file, I suggest you use <code>vroom</code> to load it and you keep <code>cache=TRUE</code> in the chunk options.</p>
-<pre class="r"><code># file contains 11 variables and 3.66m rows and is well over 380Mb. 
-# It will take time to download
-
-# URL link to CDC to download data
+<p>In early December 2019, an outbreak of a novel coronavirus disease (COVID-19) occurred in China and then rapidly spread throughout the globe, putting the world on alert.
+There are well over 3 million entries of individual, de-identified patient data at Centers for Disease Control and Prevention. In this project, I investigate how COVID-19 mortality risk differs between genders across different age groups.</p>
+<pre class="r"><code># URL link to CDC to download data
 url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
 
-covid_data &lt;- vroom::vroom(url)%&gt;% # If vroom::vroom(url) doesn&#39;t work, use read_csv(url)
+covid_data &lt;- vroom::vroom(url)%&gt;% # If 
   clean_names()</code></pre>
-<p>Given the data we have, I would like you to produce two graphs that show death % rate:</p>
+<p>Next, I produced two graphs that show death % rate:</p>
 <ol style="list-style-type: decimal">
 <li>by age group, sex, and whether the patient had co-morbidities or not</li>
 <li>by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not.</li>
@@ -153,118 +151,11 @@ covid_data %&gt;%
   ) + 
    theme_bw() + 
      theme(plot.title = element_text(size=11))</code></pre>
-<p><img src="/blogs/covid_files/figure-html/ICU-1.png" width="648" style="display: block; margin: auto;" />
-Besides the graphs, make sure your code is easy to read and understand– imagine if you revisit this six months from now. you should be able to follow what you were doing!</p>
-</div>
-<div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
-<h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
-<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
-<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
-
-# Download TFL data to temporary file
-httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-09-18T09%3A06%3A54/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20201017%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20201017T001225Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=5f199a3f235e8d3d1ae82bb1ee35b36353d63364f57ed63366c177b88aa0f237&amp;X-Amz-SignedHeaders=host]
-##   Date: 2020-10-17 00:12
-##   Status: 200
-##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-##   Size: 165 kB
-## &lt;ON DISK&gt;  C:\Users\CLARAL~1\AppData\Local\Temp\Rtmp8uboG6\filec681ad431ce.xlsx</code></pre>
-<pre class="r"><code># Use read_excel to read it as dataframe
-bike0 &lt;- read_excel(bike.temp,
-                   sheet = &quot;Data&quot;,
-                   range = cell_cols(&quot;A:B&quot;))
-
-# change dates to get year, month, and week
-bike &lt;- bike0 %&gt;% 
-  clean_names() %&gt;% 
-  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
-  mutate (year = year(day),
-          month = lubridate::month(day, label = TRUE),
-          week = isoweek(day))</code></pre>
-<p>We can easily create a facet grid that plots bikes hired by month and year.</p>
-<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>Look at May and Jun and compare 2020 with the previous years. What’s happening?</p>
-<p>However, the challenge I want you to work on is to reproduce the following two graphs.</p>
-<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
-<p>The second one looks at percentage changes from the expected level of weekly rentals. The two grey shaded rectangles correspond to the second (weeks 14-26) and fourth (weeks 40-52) quarters.</p>
-<p><img src="C:/Users/Clara Liu/Desktop/LBS/Coursework/CA09 AUT20 Data Analytics for Finance/Portfolio Website/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#First graph
-
-bikes_exp &lt;- bike %&gt;% 
-  filter(year &gt;= 2015 &amp; year &lt;= 2019) %&gt;% 
-  group_by(month) %&gt;% 
-  summarise(expected_hires = mean(bikes_hired)) %&gt;% 
-  ungroup()
-
-  bike %&gt;% 
-  filter(year &gt;= 2015 &amp; year &lt;= 2020) %&gt;% 
-  group_by(month, year) %&gt;% 
-  summarise(actual_hires = mean(bikes_hired)) %&gt;% 
-  ungroup() %&gt;% 
-  left_join(bikes_exp, by = &quot;month&quot;) %&gt;% 
-  mutate(excess_hires = actual_hires - expected_hires) %&gt;% 
-  mutate(excess_pos = ifelse(excess_hires &gt;= 0, actual_hires, expected_hires)) %&gt;%  
-    mutate(excess_neg = ifelse(excess_hires &lt; 0, actual_hires, expected_hires)) %&gt;%  
-  ggplot(aes(x = month, y =expected_hires, group = 1, fill = excess_hires)) +
-  stat_summary(fun.y=sum, geom=&quot;line&quot;, color = &quot;darkblue&quot;, size = 0.3) + 
-  geom_line(aes(month, actual_hires), color = &quot;black&quot;, size = 0.1, alpha = 0.5)+
-  geom_ribbon(aes(ymin = excess_neg , ymax = expected_hires), fill = &quot;#E77471&quot;, alpha = 0.8) +
-      geom_ribbon(aes(ymin = expected_hires , ymax = excess_pos), fill = &quot;#90EE90&quot;, alpha = 0.8) +
-#  scale_fill_manual(values=c(&quot;green&quot;, &quot;red&quot;), name = &quot;fill&quot;) +
-  facet_wrap(~ year) + 
-  theme_bw() + 
-  labs(
-    y = &quot;Bikes Rentals&quot;,
-    x = &quot;&quot;, 
-    title = &quot;Monthly Changes in TFL Bike Rentals&quot;, 
-    subtitle = &quot;Change form monthly average shown in blue \nand calculated between 2015-2019&quot;
-    
-  ) + 
-    
-    theme(plot.title = element_text(size=12, face = &quot;bold&quot;), plot.subtitle = element_text(size = 10), 
-          axis.text.x = element_text(hjust=1, size = 6))</code></pre>
-<p><img src="/blogs/covid_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#Second graph
-
-bikes_exp &lt;- bike %&gt;% 
-  filter(year &gt;= 2015 &amp; year &lt;= 2019) %&gt;% 
-  group_by(week) %&gt;% 
-  summarise(expected_hires = mean(bikes_hired)) %&gt;% 
-  ungroup()
-
-  bike %&gt;% 
-  filter(year &gt;= 2015 &amp; year &lt;= 2020) %&gt;% 
-  group_by(week, year) %&gt;% 
-  summarise(actual_hires = mean(bikes_hired)) %&gt;% 
-  ungroup() %&gt;% 
-  left_join(bikes_exp, by = &quot;week&quot;) %&gt;% 
-  mutate(excess_hires = (actual_hires - expected_hires)/expected_hires) %&gt;% 
-  mutate(group = ifelse(excess_hires &gt; 0, &quot;Postive&quot;, &quot;Negative&quot;)) %&gt;% 
-  mutate(excess_pos = ifelse(excess_hires &gt;= 0, actual_hires, expected_hires)) %&gt;%  
-  mutate(excess_neg = ifelse(excess_hires &lt; 0, actual_hires, expected_hires)) %&gt;%  
-  ggplot(aes(x=week, y= excess_hires)) +
-  geom_area(alpha=0.4, fill = &quot;#90EE90&quot;, alpha = 0.8) +
-  geom_ribbon(aes(ymin = ifelse(excess_hires &gt; 0,0, excess_hires), ymax =0 ), fill = &quot;#E77471&quot;, alpha = 0.8) + 
-  geom_line(color=&quot;#696969&quot;, size=0.15) +
-  geom_rug(sides = &quot;b&quot;, aes(color = group, show.legend = FALSE)) + 
-  scale_fill_manual(values = c(&#39;#90EE90&#39;, &#39;#E77471&#39;)) +
-  scale_y_continuous(labels = function(x) paste0(x*100, &quot;%&quot;)) + 
-  facet_wrap(~ year)+
-  theme_bw() + 
-      labs(
-    y = &quot;Bikes Rentals&quot;,
-    x = &quot;&quot;, 
-    title = &quot;Weekly Changes in TFL Bike Rentals&quot;, 
-    subtitle = &quot;Change form mweekly averages \ncalculated between 2015-2019&quot;
-    
-  ) + 
-    
-    theme(plot.title = element_text(size=12, face = &quot;bold&quot;), plot.subtitle = element_text(size = 10), 
-          axis.text.x = element_text(hjust=1, size = 10), legend.position = &quot;none&quot;)</code></pre>
-<p><img src="/blogs/covid_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
-<p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
-<p>Should you use the mean or the median to calculate your expected rentals? Why?
-&gt;I used mean here, but median is usually used when there are many outliers. In this data I didn’t notice many of them.</p>
+<p><img src="/blogs/covid_files/figure-html/ICU-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>These two graphs reveal several patterns that shed some light on our understanding of the relationship between age, sex, COVID-19 mortality and comorbidities.
+First, I find that men are more at risk for worse outcomes and death, independent of age, with COVID-19.
+Second, the presence of comorbidities increases the risk of COVID-19 mortality regardless of gender and age.
+Lastly, the risk of COVID-19 mortality increases with age for both men and women.</p>
 </div>
 
                         </div>
